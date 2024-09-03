@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe with Score</title>
+    <link rel="icon" href="https://thumbs.dreamstime.com/b/tic-tac-toe-xo-game-hand-drawn-doodle-grid-template-o-symbols-isolated-white-background-grunge-tic-tac-toe-game-315681047.jpg">
+    <style>
+        body {
+            font-family: 'Arial', 'sans-serif';
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #dbb98f;
+            color: #000000;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+        }
+
+        .square {
+            width: 100px;
+            height: 100px;
+            background-color: #96351e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            cursor: pointer;
+        }
+
+        #scoreboard {
+            display: flex;
+            justify-content: space-between;
+            width: 320px;
+            margin-top: 20px;
+            font-size: 24px;
+        }
+
+        #resetButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #96351e;
+            border: none;
+            color: #000000;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tic Tac Toe</h1>
+    <div id="board">
+        <div class="square" id="0"></div>
+        <div class="square" id="1"></div>
+        <div class="square" id="2"></div>
+        <div class="square" id="3"></div>
+        <div class="square" id="4"></div>
+        <div class="square" id="5"></div>
+        <div class="square" id="6"></div>
+        <div class="square" id="7"></div>
+        <div class="square" id="8"></div>
+    </div>
+    <div id="scoreboard">
+        <div>Player X : <span id="scoreX">0</span></div>
+        <div>Player O : <span id="scoreO">0</span></div>
+    </div>
+    <button id="resetButton">Restart Game</button>
+
+    <script>
+        const board = document.querySelector('#board');
+        const squares = document.querySelectorAll('.square');
+        const scoreXElement = document.getElementById('scoreX');
+        const scoreOElement = document.getElementById('scoreO');
+        const resetButton = document.getElementById('resetButton');
+
+        let currentPlayer = 'X';
+        let boardState = ['', '', '', '', '', '', '', '', ''];
+        let gameActive = true;
+        let scoreX = 0;
+        let scoreO = 0;
+
+        const winningCombinations = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        const checkWin = () => {
+            for (const combination of winningCombinations) {
+                const [a, b, c] = combination;
+                if (boardState[a] && boardState[a] === boardState[b] && boardState[a] === boardState[c]) {
+                    gameActive = false;
+                    if (currentPlayer === 'X') {
+                        scoreX++;
+                        scoreXElement.textContent = scoreX;
+                    } else {
+                        scoreO++;
+                        scoreOElement.textContent = scoreO;
+                    }
+                    alert(`Player ${currentPlayer} has won!`);
+                    return;
+                }
+            }
+
+            if (!boardState.includes('')) {
+                alert("It's a draw!");
+                gameActive = false;
+            }
+        };
+
+        const handleSquareClick = (e) => {
+            const index = e.target.id;
+            if (boardState[index] !== '' || !gameActive) return;
+
+            boardState[index] = currentPlayer;
+            e.target.textContent = currentPlayer;
+
+            checkWin();
+
+            if (gameActive) {
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            }
+        };
+
+        const resetGame = () => {
+            currentPlayer = 'X';
+            boardState = ['', '', '', '', '', '', '', '', ''];
+            gameActive = true;
+            squares.forEach(square => (square.textContent = ''));
+        };
+
+        squares.forEach(square => square.addEventListener('click', handleSquareClick));
+        resetButton.addEventListener('click', resetGame);
+    </script>
+</body>
+</html>  
